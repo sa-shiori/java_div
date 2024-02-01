@@ -1,0 +1,59 @@
+package com.example.demo;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+@Controller
+@RequestMapping("/")
+public class TimerController {
+	
+
+	@GetMapping
+	public String view(TimerForm timerForm) {
+		System.out.println("index画面：" + timerForm.isFlag());
+		return "index";
+	}
+	
+	@PostMapping("/timer")
+	public String play(@Validated TimerForm timerForm,
+			BindingResult bindingResult,
+			Model model,
+			RedirectAttributes redirectAttributes
+			) {
+		System.out.println("ポスト後：" + timerForm.isFlag());
+		if(bindingResult.hasErrors()) {
+			return "index";
+			
+		}
+		
+		if(timerForm.getMinutes().isEmpty() && timerForm.getSeconds().isEmpty()) {
+			return "index";
+			
+		}
+		
+		if(timerForm.getMinutes().isEmpty()) {
+			timerForm.setMinutes("0");
+			
+		}
+		
+		if(timerForm.getSeconds().isEmpty()) {
+			timerForm.setSeconds("0");
+			
+		}
+
+		System.out.println(timerForm.getMinutes() + "分");
+		System.out.println(timerForm.getSeconds() + "秒");
+		
+		timerForm.setFlag(true);
+		System.out.println("set後：" + timerForm.isFlag());
+		redirectAttributes.addFlashAttribute(timerForm);		
+		return "index";
+		
+	}
+}

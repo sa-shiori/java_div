@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
+		<item key="selection" value="(); clickButton(this);"/>
+		<item key="wrap" value="true"/>
+		<item key="casesensitive" value="false"/>
+		<item key="wholeword" value="true"/>
+		<item key="incremental" value="false"/>
+		<item key="isRegEx" value="false"/>
+		<list key="findhistory">
+			<item value="()"/>
+			<item value="textContent"/>
+			<item value="min"/>
+			<item value="parseInt"/>
+			<item value="floor"/>
+			<item value="//"/>
+			<item value="index2"/>
+			<item value="index"/>
+		</list>
+		<list key="replacehistory">
+			<item value="(); clickButton(this);"/>
+			<item value="value"/>
+			<item value="sec"/>
+			<item value="Number"/>
+			<item value="trunc"/>
+			<item value=""/>
+			<item value="index"/>
+			<item value="index2"/>
+		</list>
+	</section>
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
+		<item key="DIALOG_X_ORIGIN" value="235"/>
+		<item key="DIALOG_Y_ORIGIN" value="257"/>
+		<item key="DIALOG_WIDTH" value="511"/>
+		<item key="DIALOG_HEIGHT" value="523"/>
+		<item key="DIALOG_FONT_NAME" value="1|Yu Gothic UI|9.0|0|WINDOWS|1|-18|0|0|0|400|0|0|0|1|0|0|0|0|Yu Gothic UI"/>
+	</section>
+</section>

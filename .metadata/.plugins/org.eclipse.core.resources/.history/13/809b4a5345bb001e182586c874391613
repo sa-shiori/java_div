@@ -1,0 +1,14 @@
+package com.example.demo;
+
+import lombok.Data;
+
+@Data
+public class TimerForm {
+
+	@min="0"
+	private int minutes;
+	
+	private int seconds;
+	
+	private boolean flag;
+}

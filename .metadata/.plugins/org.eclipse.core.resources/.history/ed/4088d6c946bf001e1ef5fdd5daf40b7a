@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+
+	<title th:text="#{timer.title}">Insert title here</title>
+</head>
+<style>
+	* {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+	}
+
+	section {
+		display: flex;
+		align-items: center;
+		height: 100%;
+		margin-top: 30px;
+		padding: 20px 0;
+	}
+
+	.container {
+		width: auto;
+		height: auto;
+		text-align: center;
+	}
+
+	.container a {
+		text-decoration: none;
+	}
+
+	h1 {
+		margin-bottom: 20px;
+	}
+
+	.time {
+		display: inline;
+		font-size: 50px;
+		padding: 25px;
+	}
+
+	.controllers {
+		margin-top: 3rem;
+	}
+
+	.controllers input {
+		cursor: pointer;
+	}
+
+	.controllers #pause_btn {
+		display: none;
+	}
+
+	.controllers #stop_btn {
+		display: none;
+	}
+
+	.controllers #continue_btn {
+		display: none;
+	}
+
+	.lap_time {
+		width: auto;
+		height: auto;
+		text-align: center;
+	}
+	
+	
+</style>
+
+<body>
+	<section>
+		<div class="container">
+			<h1><a th:text="#{timer.title}" th:href="@{/}"></a></h1>
+			<div class="input_form" th:unless="${timerForm.flag}">
+				<form method="POST" th:action="@{timer}">
+					<table>
+						<thead>
+							<th><input id="input_min" type="number" name="minuets" min="0" value="0"
+									th:field="${timerForm.minutes}">分
+							</th>
+							<th>
+								<input id="input_sec" type="text" list="myList" value="0"
+									th:field="*{timerForm.seconds}">
+								<datalist id="myList" name="seconds">
+									<option>10</option>
+									<option>20</option>
+									<option>30</option>
+									<option>40</option>
+									<option>50</option>
+								</datalist>
+								秒
+							</th>
+						</thead>
+					</table>
+					<br>
+					<input type="submit" value="決定">　
+				</form>
+
+			</div>
+
+			<div class="input_form" th:if="${timerForm.flag}">
+				<div class="time-container">
+					<p class="time"><span id="min" th:text="${timerForm.minutes}"></span> 分</p>
+					<p class="time"><span id="sec" th:text="${timerForm.seconds}"></span> 秒</p>
+				</div>
+				<div class="controllers">
+					<input id="start_btn" onclick="start(); clickButton(this);" type="image" src="image/play.png">
+					<input id="pause_btn" onclick="pause(); clickButton(this);" type="image" src="image/pause.png">
+					<input id="stop_btn" onclick="stop(); clickButton(this);" type="image" src="image/stop.png">
+					<input id="continue_btn" onclick="continueTimer(); clickButton(this);" type="image"
+						src="image/continue.png">
+
+				</div>
+			</div>
+
+
+			<div class="lap_time">
+				<h3>ラップタイム</h3>
+				<ol reversed id="lap_time_list"></ol>
+			</div>
+
+		</div>
+
+
+	</section>
+
+
+	<script>
+		const min = document.getElementById("min");
+		const sec = document.getElementById("sec");
+
+
+		let min_n = min.textContent;
+		let sec_n = sec.textContent;
+
+
+		let count_time = Number(min_n * 60) + Number(sec_n);
+		const initial_count_time = count_time;
+		const startBtn = document.getElementById("start_btn");
+		const pauseBtn = document.getElementById("pause_btn");
+
+		let lapTimes = [];
+		let displyaInterval = null;
+		let totalTime = null;
+
+		let timer;
+
+		function start() {
+			document.getElementById('start_btn').style.display = "none";
+			document.getElementById('pause_btn').style.display = "inline";
+			document.getElementById('stop_btn').style.display = "inline";
+			document.getElementById('continue_btn').style.display = "inline";
+			count_time--;
+			
+			timer = setTimeout(countDown, 1000);
+		}
+
+			function countDown() {
+				document.getElementById('continue_btn').disabled = false;
+	
+				// calc
+				let countMin = Math.trunc(count_time / 60);
+				let countSec = Math.trunc(count_time % 60);
+	
+				// display
+				min.textContent = countMin >= 10 ? countMin : ('0' + countMin);
+				sec.textContent = countSec >= 10 ? countSec : ('0' + countSec);
+	
+				if (count_time < 0) {
+					clearTimeout(timer);
+					count_time = initial_count_time;
+					totalTime = initial_count_time;
+					recordTime(totalTime);
+					countDown();
+				} else {
+					count_time--;
+					timer = setTimeout(countDown, 1000);
+				}
+	
+			}
+
+		function pause() {
+			clearTimeout(timer);
+			document.getElementById('start_btn').style.display = "inline";
+			document.getElementById('pause_btn').style.display = "none";
+			document.getElementById('continue_btn').disabled = true;
+		}
+
+		function stop() {
+			document.location.reload();
+			timer = null;
+		}
+
+		function continueTimer() {
+			totalTime = initial_count_time - count_time - 1;
+			recordTime(totalTime);
+			
+			// restart
+			clearTimeout(timer);
+			count_time = initial_count_time;
+ 			countDown();
+		}
+
+
+		function recordTime(totalTime) {
+			if (timer != null) {
+				lapTimes.push(totalTime);
+				console.log(lapTimes);
+
+				let listLapTimes = document.getElementById('lap_time_list');
+				listLapTimes.innerHTML = ' ';
+
+			for(let i = lapTimes.length; 0 < i; i--){
+				let liElement = document.createElement("li");
+				liElement.textContent = lapTimes[i];
+			}
+
+			}
+		}
+		
+
+
+
+
+	</script>
+</body>
+
+</html>
